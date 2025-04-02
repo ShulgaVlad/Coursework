@@ -12,8 +12,8 @@ class AnalysisThread(QThread):
 
     def run(self):
         """Запускає аналіз тексту в окремому потоці."""
-        prompt_main = f"Надай лише найголовніші речення серед тексту, за якими можна зрозуміти сенс тексту, повністю цитуючи та не змінюючи їх : {self.text}"
-        prompt_specialization = f"Надай лише його спеціалізацію: {self.text}"
+        prompt_main = f'Надай лише найголовніші речення серед тексту, за якими можна зрозуміти сенс тексту, повністю цитуючи та не змінюючи їх. Якщо найголовніші речення не визначені за якихось причин, надай відповідь "Не визначено": {self.text}'
+        prompt_specialization = f'Надай лише його спеціалізацію: {self.text}'
 
         main_sentences = self.model.generate_response(prompt_main)
         sentences = re.split(r'(?<=[.!?])\s+', main_sentences)
