@@ -1,4 +1,5 @@
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QApplication
+from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt
 from AlgorhythmBasedTextAnalysis.TextStatistics import TextStatistics
 from UI.UiComponents import UIComponents
@@ -11,6 +12,8 @@ class AnalysisWidget(QWidget):
         super().__init__()
         self.model = model
         self.text_stats = TextStatistics()
+        self.zipf_image_path = None
+
         self.initUI()
 
     def initUI(self):
@@ -25,7 +28,7 @@ class AnalysisWidget(QWidget):
         screen_height = screen_geometry.height()
 
         # Встановлюємо розміри вікна залежно від розміру екрана (наприклад, 70% x 85%)
-        window_width = int(screen_width * 0.7)
+        window_width = int(screen_width * 0.65)
         window_height = int(screen_height * 0.85)
         self.setGeometry(
             (screen_width - window_width) // 2,
@@ -52,10 +55,31 @@ class AnalysisWidget(QWidget):
         self.analyze_button = UIComponents.create_button_section(
             self.layout, self.load_file, self.start_analysis, self.save_results
         )
-        outputs = UIComponents.create_result_section(self.layout)
 
-        # Ініціалізуємо логіку
-        self.logic = AnalysisLogic(self.model, self.text_stats, self.text_input, self.analyze_button, outputs)
+        # Результати
+        (self.result_text_specialization_output,
+         self.result_text_algorhythm_specialization_output,
+         self.result_main_sentence_output,
+         self.result_text_statistics_output,
+         self.result_text_tone_output,
+         self.result_zipf_image) = UIComponents.create_result_section(self.layout)
+
+        # Аналіз
+        outputs = (
+            self.result_text_specialization_output,
+            self.result_text_algorhythm_specialization_output,
+            self.result_main_sentence_output,
+            self.result_text_statistics_output,
+            self.result_text_tone_output,
+            self.result_zipf_image
+        )
+
+        self.logic = AnalysisLogic(self.model,
+                                   self.text_stats,
+                                   self.text_input,
+                                   self.analyze_button,
+                                   outputs,
+                                   self)
 
     def load_file(self):
         self.logic.load_file()

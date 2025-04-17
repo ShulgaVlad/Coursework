@@ -114,14 +114,13 @@ class UIComponents:
                 background-color: transparent;
             }
         """)
-        result_layout = QVBoxLayout()
-        result_layout.setSpacing(10)
+
+        # === Всі віджети створюються тут ===
 
         # Спеціалізація(ШІ)
         result_text_specialization_label = QLabel("Спеціалізація(ШІ):")
-        result_text_specialization_label.setStyleSheet("font-weight: bold; color: #2f3542; border-radius: 5px; padding-left: 5px; margin-top: 15px;")
+        result_text_specialization_label.setStyleSheet("font-weight: bold; color: #2f3542; padding-left: 5px; margin-top: 15px;")
         result_text_specialization_label.setFixedHeight(40)
-        result_layout.addWidget(result_text_specialization_label)
 
         result_text_specialization_output = QTextEdit()
         result_text_specialization_output.setReadOnly(True)
@@ -135,13 +134,11 @@ class UIComponents:
                 color: black;
             }
         """)
-        result_layout.addWidget(result_text_specialization_output)
 
         # Спеціалізація(Алгоритмічна)
         result_text_algorhythm_specialization_label = QLabel("Спеціалізація(Алгоритмічна):")
-        result_text_algorhythm_specialization_label.setStyleSheet("font-weight: bold; color: #2f3542; border-radius: 5px; padding-left: 5px;")
+        result_text_algorhythm_specialization_label.setStyleSheet("font-weight: bold; color: #2f3542; padding-left: 5px;")
         result_text_algorhythm_specialization_label.setFixedHeight(25)
-        result_layout.addWidget(result_text_algorhythm_specialization_label)
 
         result_text_algorhythm_specialization_output = QTextEdit()
         result_text_algorhythm_specialization_output.setReadOnly(True)
@@ -155,14 +152,11 @@ class UIComponents:
                 color: black;
             }
         """)
-        result_layout.addWidget(result_text_algorhythm_specialization_output)
 
         # Тон тексту
         result_text_tone_label = QLabel("Тон тексту:")
-        result_text_tone_label.setStyleSheet(
-            "font-weight: bold; color: #2f3542; border-radius: 5px; padding-left: 5px;")
+        result_text_tone_label.setStyleSheet("font-weight: bold; color: #2f3542; padding-left: 5px;")
         result_text_tone_label.setFixedHeight(25)
-        result_layout.addWidget(result_text_tone_label)
 
         result_text_tone_output = QTextEdit()
         result_text_tone_output.setReadOnly(True)
@@ -176,13 +170,11 @@ class UIComponents:
                 color: black;
             }
         """)
-        result_layout.addWidget(result_text_tone_output)
 
         # Найголовніші речення
         result_main_sentence_label = QLabel("Найголовніші речення:")
-        result_main_sentence_label.setStyleSheet("font-weight: bold; color: #2f3542; border-radius: 5px; padding-left: 5px;")
+        result_main_sentence_label.setStyleSheet("font-weight: bold; color: #2f3542; padding-left: 5px;")
         result_main_sentence_label.setFixedHeight(25)
-        result_layout.addWidget(result_main_sentence_label)
 
         result_main_sentence_output = QTextEdit()
         result_main_sentence_output.setReadOnly(True)
@@ -195,13 +187,11 @@ class UIComponents:
                 color: black;
             }
         """)
-        result_layout.addWidget(result_main_sentence_output)
 
         # Статистика тексту
         result_text_statistics_label = QLabel("Статистика тексту:")
-        result_text_statistics_label.setStyleSheet("font-weight: bold; color: #2f3542; border-radius: 5px; padding-left: 5px;")
+        result_text_statistics_label.setStyleSheet("font-weight: bold; color: #2f3542; padding-left: 5px;")
         result_text_statistics_label.setFixedHeight(25)
-        result_layout.addWidget(result_text_statistics_label)
 
         result_text_statistics_output = QTextEdit()
         result_text_statistics_output.setReadOnly(True)
@@ -215,10 +205,58 @@ class UIComponents:
                 color: black;
             }
         """)
-        result_layout.addWidget(result_text_statistics_output)
 
-        result_group.setLayout(result_layout)
+        # === Права частина: Закон Зіпфа ===
+        zipf_label = QLabel("Закон Зіпфа:")
+        zipf_label.setStyleSheet("font-weight: bold; color: #2f3542; padding-left: 5px;")
+        zipf_label.setFixedHeight(25)
+
+        result_zipf_image = QLabel()
+        result_zipf_image.setMinimumSize(600, 400)
+        result_zipf_image.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        result_zipf_image.setStyleSheet("""
+            QLabel {
+                border: 1px solid #dfe4ea;
+                border-radius: 8px;
+                background-color: #ffffff;
+            }
+        """)
+
+        # === Макети ===
+
+        # Ліва колонка (всі текстові поля)
+        left_layout = QVBoxLayout()
+        left_layout.setSpacing(10)
+
+        left_layout.addWidget(result_text_specialization_label)
+        left_layout.addWidget(result_text_specialization_output)
+
+        left_layout.addWidget(result_text_algorhythm_specialization_label)
+        left_layout.addWidget(result_text_algorhythm_specialization_output)
+
+        left_layout.addWidget(result_text_tone_label)
+        left_layout.addWidget(result_text_tone_output)
+
+        left_layout.addWidget(result_main_sentence_label)
+        left_layout.addWidget(result_main_sentence_output)
+
+        left_layout.addWidget(result_text_statistics_label)
+        left_layout.addWidget(result_text_statistics_output)
+
+        # Права колонка (тільки графік)
+        right_layout = QVBoxLayout()
+        right_layout.setAlignment(Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter)
+        right_layout.addWidget(zipf_label)
+        right_layout.addWidget(result_zipf_image)
+
+        # Основний макет — горизонтально
+        main_layout = QHBoxLayout()
+        main_layout.addLayout(left_layout, stretch=2)
+        main_layout.addLayout(right_layout, stretch=1)
+
+        result_group.setLayout(main_layout)
         layout.addWidget(result_group)
 
         return (result_text_specialization_output, result_text_algorhythm_specialization_output,
-                result_main_sentence_output, result_text_statistics_output, result_text_tone_output)
+                result_main_sentence_output, result_text_statistics_output, result_text_tone_output,
+                result_zipf_image)
