@@ -157,6 +157,27 @@ class UIComponents:
         """)
         result_layout.addWidget(result_text_algorhythm_specialization_output)
 
+        # Тон тексту
+        result_text_tone_label = QLabel("Тон тексту:")
+        result_text_tone_label.setStyleSheet(
+            "font-weight: bold; color: #2f3542; border-radius: 5px; padding-left: 5px;")
+        result_text_tone_label.setFixedHeight(25)
+        result_layout.addWidget(result_text_tone_label)
+
+        result_text_tone_output = QTextEdit()
+        result_text_tone_output.setReadOnly(True)
+        result_text_tone_output.setFixedHeight(30)
+        result_text_tone_output.setStyleSheet("""
+            QTextEdit {
+                border: 1px solid #dfe4ea;
+                border-radius: 8px;
+                padding: 5px;
+                background-color: #ffffff;
+                color: black;
+            }
+        """)
+        result_layout.addWidget(result_text_tone_output)
+
         # Найголовніші речення
         result_main_sentence_label = QLabel("Найголовніші речення:")
         result_main_sentence_label.setStyleSheet("font-weight: bold; color: #2f3542; border-radius: 5px; padding-left: 5px;")
@@ -200,4 +221,4 @@ class UIComponents:
         layout.addWidget(result_group)
 
         return (result_text_specialization_output, result_text_algorhythm_specialization_output,
-                result_main_sentence_output, result_text_statistics_output)
+                result_main_sentence_output, result_text_statistics_output, result_text_tone_output)

@@ -3,6 +3,8 @@ from AITextAnalysis.AnalysisThread import AnalysisThread
 from AlgorhythmBasedTextAnalysis.AlgorhythmTextAnalysis import AlgorhythmTextAnalysis
 from ReadTxtFile import FileLoader
 from AITextAnalysis.TextHighlighter import TextHighlighter
+from AlgorhythmBasedTextAnalysis.LexicalSentimentAnalysis.LexicalSentimentAnalysis import LexicalSentimentAnalysis
+
 
 class AnalysisLogic:
     def __init__(self, model, text_stats, text_input, analyze_button, outputs):
@@ -11,7 +13,8 @@ class AnalysisLogic:
         self.text_input = text_input
         self.analyze_button = analyze_button
         self.result_text_specialization_output, self.result_text_algorhythm_specialization_output, \
-            self.result_main_sentence_output, self.result_text_statistics_output = outputs
+            self.result_main_sentence_output, self.result_text_statistics_output, \
+            self.result_text_tone_output = outputs
 
     def load_file(self):
         """Завантажує текст з файлу у поле введення."""
@@ -31,15 +34,19 @@ class AnalysisLogic:
     def update_result(self, main_sentences, specialization):
         """Оновлює UI з отриманими результатами."""
         text = self.text_input.toPlainText()
-        top_words = self.text_stats.calculate_text_statistics(text)
+        words, top_words = self.text_stats.calculate_text_statistics(text)
         analyzer = AlgorhythmTextAnalysis(top_words)
         detected_specialization = analyzer.run()
+
+        tone = LexicalSentimentAnalysis.lexical_sentiment_analysis(text)
 
         self.result_main_sentence_output.setText(main_sentences)
         self.result_text_specialization_output.setText(specialization)
         self.result_text_statistics_output.setText(self.text_stats.statistics_text)
-        TextHighlighter.highlight_text(self.text_input, text, main_sentences)
         self.result_text_algorhythm_specialization_output.setText(detected_specialization)
+        self.result_text_tone_output.setText(tone)
+
+        TextHighlighter.highlight_text(self.text_input, text, main_sentences)
         self.analyze_button.setEnabled(True)
 
     def save_results(self):
@@ -54,6 +61,8 @@ class AnalysisLogic:
                     file.write(self.result_text_specialization_output.toPlainText() + "\n\n")
                     file.write("Спеціалізація(Алгоритмічна):\n")
                     file.write(self.result_text_algorhythm_specialization_output.toPlainText() + "\n\n")
+                    file.write("Тон тексту:\n")
+                    file.write(self.result_text_tone_output.toPlainText() + "\n\n")
                     file.write("Найголовніші речення:\n")
                     file.write(self.result_main_sentence_output.toPlainText() + "\n\n")
                     file.write("Статистика тексту:\n")

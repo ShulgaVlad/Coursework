@@ -1,5 +1,8 @@
 import re
 from collections import Counter
+import pymorphy2
+
+morph = pymorphy2.MorphAnalyzer(lang='uk')
 
 class TextStatistics:
     def __init__(self):
@@ -13,19 +16,70 @@ class TextStatistics:
         sentences = re.split(r'[.!?]', text)
         sentences = [s.strip() for s in sentences if s.strip()]
         punctuation = re.findall(r'[.,!?;:]', text)
-        avg_word_length = sum(len(word) for word in words) / len(words) if words else 0
-        avg_sentence_length = sum(len(s.split()) for s in sentences) / len(sentences) if sentences else 0
+        # avg_word_length = sum(len(word) for word in words) / len(words) if words else 0
+        # avg_sentence_length = sum(len(s.split()) for s in sentences) / len(sentences) if sentences else 0
         word_frequencies = Counter(words)
-        top_words_list = word_frequencies.most_common(10)  # List of (word, count) tuples
-        top_words = {word for word, _ in top_words_list}  # Set of top words for AlgorhythmTextAnalysis
-        top_words_str = ', '.join([f'{word} ({count})' for word, count in top_words_list])
+
+        conjunctions = {
+            # Сполучники
+            'і', 'й', 'та', 'але', 'однак', 'проте', 'зате', 'втім', 'а', 'бо', 'оскільки', 'тому',
+            'що', 'адже', 'нехай', 'аби', 'щоб', 'якщо', 'коли', 'раз', 'поки', 'доки', 'доти',
+            'після', 'щойно', 'ледве', 'хоч', 'хоча', 'навіть', 'ніби', 'немов', 'наче',
+            'мов', 'мовби', 'неначе', 'начебто', 'так', 'також', 'отже', 'тож', 'тимчасом',
+            'чи', 'або', 'ані', 'ні',
+
+            # Прийменники (усі основні)
+            'без', 'біля', 'близько', 'в', 'від', 'всередині', 'всупереч', 'впродовж', 'внаслідок',
+            'вперше', 'вгору', 'до', 'для', 'довкола', 'з', 'за', 'замість', 'заради', 'зверху',
+            'із', 'крізь', 'кругом', 'між', 'на', 'над', 'навіть', 'навколо', 'наперекір',
+            'напроти', 'навпроти', 'об', 'обабіч', 'од', 'перед', 'поза', 'попереду', 'попри',
+            'по', 'під', 'після', 'причиною', 'при', 'про', 'проти', 'поруч', 'поміж', 'поза',
+            'під час', 'разом з', 'серед', 'супроти', 'у', 'унаслідок', 'уздовж', 'через',
+            'щодо', 'шляхом', 'вниз', 'знизу', 'відповідно до', 'з-під', 'з-над', 'з-поза',
+
+            # Частки
+            'не', 'ні', 'тільки', 'лише', 'ж', 'же', 'то', 'от', 'саме', 'навіть', 'хоч',
+            'аби', 'би', 'б', 'тощо', 'мовляв', 'мабуть', 'нема', 'майже', 'це',
+
+            # Займенники
+            'я', 'ти', 'він', 'вона', 'воно', 'ми', 'ви', 'вони',
+            'мене', 'мені', 'мною', 'тобі', 'тебе', 'його', 'її', 'їх',
+            'нас', 'нам', 'нам', 'вам', 'вас', 'ними',
+            'свій', 'себе', 'собі', 'собою',
+            'цей', 'такий', 'той', 'деякий', 'будь-який', 'інший',
+            'хтось', 'хто', 'що', 'нічого', 'ніхто', 'дещо', 'щось', 'усе', 'все', 'який',
+
+            # Допоміжні дієслова / модальні
+            'є', 'був', 'була', 'було', 'були', 'буде', 'будуть',
+            'міг', 'може', 'можуть', 'має', 'мали', 'маємо', 'повинен', 'треба',
+            'доведеться', 'слід', 'можна', 'неможливо', 'необхідно', 'мабуть',
+
+            # Інші службові
+            'ну', 'о', 'а', 'ех', 'ой', 'ех', 'ага', 'ось', 'таки', 'навіщо',
+            'щойно', 'тепер', 'зараз', 'далі', 'потім', 'раніше', 'вже', 'ще',
+            'там', 'тут', 'сюди', 'звідти', 'куди', 'скрізь', 'усюди', 'досі', 'щодня', 'іноді'
+        }
+
+        # Лематизуємо та фільтруємо службові слова
+        lemmas = []
+        for word in words:
+            normal_word = morph.parse(word)[0].normal_form
+            if normal_word not in conjunctions:
+                lemmas.append(normal_word)
+
+        # Підрахунок частоти лише після фільтрації
+        word_frequencies = Counter(lemmas)
+
+        sorted_frequencies = sorted(word_frequencies.items(), key=lambda item: item[1], reverse=True)
+
+        top_words_str = ', '.join([f'{word} ({count})' for word, count in sorted_frequencies[:10]])
 
         self.statistics_text = (f"Кількість слів: {len(words)}\n"
-                               f"Кількість унікальних слів: {len(unique_words)}\n"
-                               f"Кількість речень: {len(sentences)}\n"
-                               f"Кількість розділових знаків: {len(punctuation)}\n"
-                               f"Середня довжина слова: {avg_word_length:.2f}\n"
-                               f"Середня довжина речення: {avg_sentence_length:.2f}\n"
-                               f"Топ 10 слів: {top_words_str}")
+                                f"Кількість унікальних слів: {len(unique_words)}\n"
+                                f"Кількість речень: {len(sentences)}\n"
+                                f"Кількість розділових знаків: {len(punctuation)}\n"
+                                # f"Середня довжина слова: {avg_word_length:.2f}\n"
+                                # f"Середня довжина речення: {avg_sentence_length:.2f}\n"
+                                f"Топ 10 слів(приведених до нормальної форми): {top_words_str}")
 
-        return top_words  # Return set of top words
+        return words, sorted_frequencies    # Return set of top words
