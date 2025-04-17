@@ -81,6 +81,5 @@ if __name__ == '__main__':
     # Ініціалізуємо модель
     model = AIModel()  # Замініть на реальну ініціалізацію вашої моделі
     window = AnalysisWidget(model=model)  # Передаємо ініціалізовану модель
-    window.move(500, 50)
     window.show()
     sys.exit(app.exec())
