@@ -1,5 +1,5 @@
 import re
-from collections import Counter
+# from collections import Counter
 import pymorphy2
 
 morph = pymorphy2.MorphAnalyzer(lang='uk')
@@ -25,7 +25,7 @@ class LexicalSentimentAnalysis:
 
         # Використовуємо set для унікальних слів
         unique_lemmas = set(lemmas)
-        word_counts = Counter(lemmas)
+        # word_counts = Counter(lemmas)
 
         positive_words = LexicalSentimentAnalysis.load_words(
             'AlgorhythmBasedTextAnalysis/LexicalSentimentAnalysis/Words/positive_words.txt')

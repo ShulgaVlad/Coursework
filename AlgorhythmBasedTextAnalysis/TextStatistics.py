@@ -1,6 +1,7 @@
 import re
 from collections import Counter
 import pymorphy2
+from AlgorhythmBasedTextAnalysis.LexicalSentimentAnalysis.Words.stopwords import stopwords
 
 morph = pymorphy2.MorphAnalyzer(lang='uk')
 
@@ -11,67 +12,31 @@ class TextStatistics:
     def calculate_text_statistics(self, text):
         """Розраховує статистику тексту та виводить у UI, повертає набір топ-слів."""
         text = text.lower()  # Convert text to lowercase
-        words = re.findall(r"\b\w+(?:['’]\w+)?\b", text)  # Fix apostrophes
+        words = re.findall(r"\b[a-zа-яїєґ]+(?:['’][a-zа-яїєґ]+)?\b", text, re.UNICODE)  # Fix apostrophes
         unique_words = set(words)
         sentences = re.split(r'[.!?]', text)
         sentences = [s.strip() for s in sentences if s.strip()]
         punctuation = re.findall(r'[.,!?;:]', text)
         # avg_word_length = sum(len(word) for word in words) / len(words) if words else 0
         # avg_sentence_length = sum(len(s.split()) for s in sentences) / len(sentences) if sentences else 0
-        word_frequencies = Counter(words)
-
-        conjunctions = {
-            # Сполучники
-            'і', 'й', 'та', 'але', 'однак', 'проте', 'зате', 'втім', 'а', 'бо', 'оскільки', 'тому',
-            'що', 'адже', 'нехай', 'аби', 'щоб', 'якщо', 'коли', 'раз', 'поки', 'доки', 'доти',
-            'після', 'щойно', 'ледве', 'хоч', 'хоча', 'навіть', 'ніби', 'немов', 'наче',
-            'мов', 'мовби', 'неначе', 'начебто', 'так', 'також', 'отже', 'тож', 'тимчасом',
-            'чи', 'або', 'ані', 'ні',
-
-            # Прийменники (усі основні)
-            'без', 'біля', 'близько', 'в', 'від', 'всередині', 'всупереч', 'впродовж', 'внаслідок',
-            'вперше', 'вгору', 'до', 'для', 'довкола', 'з', 'за', 'замість', 'заради', 'зверху',
-            'із', 'крізь', 'кругом', 'між', 'на', 'над', 'навіть', 'навколо', 'наперекір',
-            'напроти', 'навпроти', 'об', 'обабіч', 'од', 'перед', 'поза', 'попереду', 'попри',
-            'по', 'під', 'після', 'причиною', 'при', 'про', 'проти', 'поруч', 'поміж', 'поза',
-            'під час', 'разом з', 'серед', 'супроти', 'у', 'унаслідок', 'уздовж', 'через',
-            'щодо', 'шляхом', 'вниз', 'знизу', 'відповідно до', 'з-під', 'з-над', 'з-поза',
-
-            # Частки
-            'не', 'ні', 'тільки', 'лише', 'ж', 'же', 'то', 'от', 'саме', 'навіть', 'хоч',
-            'аби', 'би', 'б', 'тощо', 'мовляв', 'мабуть', 'нема', 'майже', 'це',
-
-            # Займенники
-            'я', 'ти', 'він', 'вона', 'воно', 'ми', 'ви', 'вони',
-            'мене', 'мені', 'мною', 'тобі', 'тебе', 'його', 'її', 'їх',
-            'нас', 'нам', 'нам', 'вам', 'вас', 'ними',
-            'свій', 'себе', 'собі', 'собою',
-            'цей', 'такий', 'той', 'деякий', 'будь-який', 'інший',
-            'хтось', 'хто', 'що', 'нічого', 'ніхто', 'дещо', 'щось', 'усе', 'все', 'який',
-
-            # Допоміжні дієслова / модальні
-            'є', 'був', 'була', 'було', 'були', 'буде', 'будуть',
-            'міг', 'може', 'можуть', 'має', 'мали', 'маємо', 'повинен', 'треба',
-            'доведеться', 'слід', 'можна', 'неможливо', 'необхідно', 'мабуть',
-
-            # Інші службові
-            'ну', 'о', 'а', 'ех', 'ой', 'ех', 'ага', 'ось', 'таки', 'навіщо',
-            'щойно', 'тепер', 'зараз', 'далі', 'потім', 'раніше', 'вже', 'ще',
-            'там', 'тут', 'сюди', 'звідти', 'куди', 'скрізь', 'усюди', 'досі', 'щодня', 'іноді'
-        }
 
         # Лематизуємо та фільтруємо службові слова
         lemmas = []
         for word in words:
-            normal_word = morph.parse(word)[0].normal_form
-            if normal_word not in conjunctions:
-                lemmas.append(normal_word)
+            parsed = morph.parse(word)
+            if not any('uk' in str(p.tag) for p in parsed) or parsed[0].score < 0.1:
+                if word not in stopwords:
+                    lemmas.append(word)
+            else:
+                # Якщо не технічний термін, лематизуємо
+                normal_word = parsed[0].normal_form
+                if normal_word not in stopwords:
+                    lemmas.append(normal_word)
 
         # Підрахунок частоти лише після фільтрації
         word_frequencies = Counter(lemmas)
 
         sorted_frequencies = sorted(word_frequencies.items(), key=lambda item: item[1], reverse=True)
-
         top_words_str = ', '.join([f'{word} ({count})' for word, count in sorted_frequencies[0:]])
 
         self.statistics_text = (f"Кількість слів: {len(words)}\n"
