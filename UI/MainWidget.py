@@ -4,6 +4,7 @@ from PyQt6.QtCore import Qt
 from AlgorhythmBasedTextAnalysis.TextStatistics import TextStatistics
 from UI.UiComponents import UIComponents
 from UI.AnalysisLogic import AnalysisLogic
+from FileControl.SaveResults import SaveResults
 
 class AnalysisWidget(QWidget):
     """Головний віджет, що містить графічний інтерфейс програми."""
@@ -90,5 +91,14 @@ class AnalysisWidget(QWidget):
     def update_result(self, main_sentences, specialization):
         self.logic.update_result(main_sentences, specialization)
 
-    def save_results(self):
-        self.logic.save_results()
+    def save_results(self, zipf_image_path=None):
+        SaveResults.save(
+            self.text_input,
+            self.result_text_specialization_output,
+            self.result_text_algorhythm_specialization_output,
+            self.result_text_tone_output,
+            self.result_main_sentence_output,
+            self.text_stats.statistics_text,
+            zipf_image_path or "zipf_plot.png"
+        )
+

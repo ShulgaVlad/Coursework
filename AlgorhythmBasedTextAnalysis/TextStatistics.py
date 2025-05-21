@@ -37,7 +37,7 @@ class TextStatistics:
         word_frequencies = Counter(lemmas)
 
         sorted_frequencies = sorted(word_frequencies.items(), key=lambda item: item[1], reverse=True)
-        top_words_str = ', '.join([f'{word} ({count})' for word, count in sorted_frequencies[0:]])
+        top_words_str = ', '.join([f'{word} ({count})' for word, count in sorted_frequencies[:10]])
 
         self.statistics_text = (f"Кількість слів: {len(words)}\n"
                                 f"Кількість унікальних слів: {len(unique_words)}\n"

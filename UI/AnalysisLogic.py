@@ -1,7 +1,7 @@
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from AITextAnalysis.AnalysisThread import AnalysisThread
 from AlgorhythmBasedTextAnalysis.AlgorhythmTextAnalysis import AlgorhythmTextAnalysis
-from ReadTxtFile import FileLoader
+from FileControl.ReadTxtFile import FileLoader
 from AITextAnalysis.TextHighlighter import TextHighlighter
 from AlgorhythmBasedTextAnalysis.LexicalSentimentAnalysis.LexicalSentimentAnalysis import LexicalSentimentAnalysis
 from AlgorhythmBasedTextAnalysis.ZipfAnalyze import ZipfAnalyze
@@ -67,25 +67,3 @@ class AnalysisLogic:
 
         TextHighlighter.highlight_text(self.text_input, text, main_sentences)
         self.analyze_button.setEnabled(True)
-
-    def save_results(self):
-        """Зберігає результати аналізу у текстовий файл."""
-        file_dialog = QFileDialog()
-        file_path, _ = file_dialog.getSaveFileName(self.text_input, "Зберегти результат", "", "Text Files (*.txt)")
-        if file_path:
-            try:
-                with open(file_path, "w", encoding="utf-8") as file:
-                    file.write("Результати аналізу тексту:\n\n")
-                    file.write("Спеціалізація(ШІ):\n")
-                    file.write(self.result_text_specialization_output.toPlainText() + "\n\n")
-                    file.write("Спеціалізація(Алгоритмічна):\n")
-                    file.write(self.result_text_algorhythm_specialization_output.toPlainText() + "\n\n")
-                    file.write("Тон тексту:\n")
-                    file.write(self.result_text_tone_output.toPlainText() + "\n\n")
-                    file.write("Найголовніші речення:\n")
-                    file.write(self.result_main_sentence_output.toPlainText() + "\n\n")
-                    file.write("Статистика тексту:\n")
-                    file.write(self.text_stats.statistics_text + "\n")
-                QMessageBox.information(self.text_input, "Збережено", "Результати успішно збережено у файл.")
-            except Exception as e:
-                QMessageBox.critical(self.text_input, "Помилка", f"Помилка при збереженні файлу: {str(e)}")
