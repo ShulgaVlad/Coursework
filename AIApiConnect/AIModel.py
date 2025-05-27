@@ -9,7 +9,7 @@ class AIModel:
         load_dotenv()
         api_key = os.getenv("GOOGLE_AI_API_KEY")
         genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel("gemini-1.5-flash")
+        self.model = genai.GenerativeModel("gemini-1.5-flash-8b")
 
     def generate_response(self, prompt):
         """Відправляє запит до AIApiConnect та повертає відповідь."""

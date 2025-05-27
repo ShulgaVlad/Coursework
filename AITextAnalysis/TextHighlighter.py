@@ -29,3 +29,4 @@ class TextHighlighter:
                 fmt = format_ai if clean_sentence in main_sentences_list else format_normal
                 cursor.insertText(sentence + " ", fmt)
             cursor.insertText("\n")
+
