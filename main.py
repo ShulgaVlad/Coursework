@@ -1,8 +1,5 @@
 import sys
-import time
-from PyQt6.QtWidgets import QApplication, QSplashScreen, QLabel, QVBoxLayout, QWidget
-from PyQt6.QtCore import Qt, QTimer, QEvent
-from PyQt6.QtGui import QPixmap, QPainter, QColor, QFont
+from PyQt6.QtWidgets import QApplication
 from UI.MainWidget import AnalysisWidget
 from AIApiConnect.AIModel import AIModel  # Замініть на ваш модуль
 

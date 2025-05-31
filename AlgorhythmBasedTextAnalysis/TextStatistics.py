@@ -24,14 +24,9 @@ class TextStatistics:
         lemmas = []
         for word in words:
             parsed = morph.parse(word)
-            if not any('uk' in str(p.tag) for p in parsed) or parsed[0].score < 0.1:
-                if word not in stopwords:
-                    lemmas.append(word)
-            else:
-                # Якщо не технічний термін, лематизуємо
-                normal_word = parsed[0].normal_form
-                if normal_word not in stopwords:
-                    lemmas.append(normal_word)
+            normal_word = parsed[0].normal_form
+            if normal_word not in stopwords:
+                lemmas.append(normal_word)
 
         # Підрахунок частоти лише після фільтрації
         word_frequencies = Counter(lemmas)
@@ -47,4 +42,4 @@ class TextStatistics:
                                 # f"Середня довжина речення: {avg_sentence_length:.2f}\n"
                                 f"Топ 10 слів(приведених до нормальної форми): {top_words_str}")
 
-        return words, sorted_frequencies    # Return set of top words
+        return lemmas, sorted_frequencies

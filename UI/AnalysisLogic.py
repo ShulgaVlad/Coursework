@@ -1,4 +1,3 @@
-from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from AITextAnalysis.AnalysisThread import AnalysisThread
 from AlgorhythmBasedTextAnalysis.AlgorhythmTextAnalysis import AlgorhythmTextAnalysis
 from FileControl.ReadTxtFile import FileLoader
@@ -42,14 +41,14 @@ class AnalysisLogic:
 
     def update_result(self, main_sentences, specialization):
         text = self.text_input.toPlainText()
-        words, top_words = self.text_stats.calculate_text_statistics(text)
+        lemmas, top_words = self.text_stats.calculate_text_statistics(text)
 
         # Алгоритмічний аналіз
         analyzer = AlgorhythmTextAnalysis(top_words)
         detected_specialization = analyzer.run()
 
         # Аналіз тону
-        tone = LexicalSentimentAnalysis.lexical_sentiment_analysis(text)
+        tone = LexicalSentimentAnalysis.lexical_sentiment_analysis(lemmas)
 
         # Закон Зіпфа
         zipf_analyzer = ZipfAnalyze()

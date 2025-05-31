@@ -1,8 +1,6 @@
 import re
 # from collections import Counter
-import pymorphy2
 
-morph = pymorphy2.MorphAnalyzer(lang='uk')
 class LexicalSentimentAnalysis:
     @staticmethod
     def load_words(file_path):
@@ -10,19 +8,7 @@ class LexicalSentimentAnalysis:
             return set(word.strip().lower() for word in file.readlines())
 
     @staticmethod
-    def tokenize(text):
-        # Витягуємо тільки слова (без пунктуації), у нижньому регістрі
-        return re.findall(r'\b\w+\b', text.lower())
-
-    @staticmethod
-    def lemmatize_words(words):
-        return [morph.parse(word)[0].normal_form for word in words]
-
-    @staticmethod
-    def lexical_sentiment_analysis(text: str) -> str:
-        words = LexicalSentimentAnalysis.tokenize(text)
-        lemmas = LexicalSentimentAnalysis.lemmatize_words(words)
-
+    def lexical_sentiment_analysis(lemmas):
         # Використовуємо set для унікальних слів
         unique_lemmas = set(lemmas)
         # word_counts = Counter(lemmas)
